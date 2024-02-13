@@ -7,8 +7,15 @@ export const showToast = (type, message1, message2) => {
       text1: message1,
       text2: message2,
       visibilityTime: 2000,  
+      autoHide: true,
+      topOffset: 10,
+      bottomOffset: 40,
 
+
+       
+  
       });
+      
   };
 
   
