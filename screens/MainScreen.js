@@ -119,9 +119,9 @@ const MainScreen = ({ navigation }) => {
         } else {
           showToast(
             "error",
-            " ⚠️ Une erreur s'est produite. Veuillez réessayer plus tard."
+            "⚠️ Une erreur s'est produite. Veuillez réessayer plus tard."
           );
-        }
+                  }
       } finally {
         setLoading(false);
  
@@ -140,8 +140,15 @@ const handleOnChangeText2 = (value, fieldName) => {
 
 const isValidForm2 = () => {
 
+
+
   if (!isValidObjectField(newuserInfo)) {
     showToast("error", "⚠️ Veuillez remplir tous les champs requis");
+    return false;
+  }
+
+  if(!fullname.trim() || fullname.length < 5 || fullname.length > 12){
+    showToast("error", "⚠️ Nom & prénom doit contenir au moins 5 caractères");
     return false;
   }
 
@@ -160,33 +167,49 @@ const isValidForm2 = () => {
 };
 
 const submitForm2 = async () => {
- console.log(newuserInfo);
-  if (isValidForm2()) {
-    try {
-       const res = await client.post("/register", { ...newuserInfo });
-       if (res.data.success) {
-        SetNewUserInfo({ mail: "", pwd: "", fullname: ""});
-      } 
- 
-      showToast("success", "✔️ Inscription réussie");  
+  if (!isValidForm2()) {
+    return;
+  }
 
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        showToast("error", "⚠️ Vérifiez votre email ou mot de passe");
-      } else if (error.response && error.response.status === 401) {
-        showToast("error", "⚠️ Email or password is incorrect");
-      } else {
-        showToast(
-          "error",
-          " ⚠️ Une erreur s'est produite. Veuillez réessayer plus tard."
-        );
-      }
-    }  
+  try {
+    setLoading(true);
+    const payload = {
+      email: newuserInfo.mail,
+      fullname: newuserInfo.fullname,
+      password: newuserInfo.pwd,
+    };
+
+    const backendURL = "http://192.168.100.221:3003/api/v1/users/register";
+    const response = await fetch(backendURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    showToast("success", "⚡️ Bienvenue !");
+
+    const responseData = await response.json();
+    console.log(responseData);
+  } catch (error) {
+    showToast("error", "⚠️ Veuillez vérifier vos informations");
+    console.error(error);
+  } finally {
+    setLoading(false);
   }
 };
+
+
+
    
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
         <TouchableOpacity onPress={handleLoginPress}>
@@ -305,6 +328,11 @@ const submitForm2 = async () => {
                 fillColor={isChecked1 ? "#626262" : "black"}
                 onPress={() => setChecked1(!isChecked1)}
               />
+<TouchableOpacity
+onPress={() => navigation.navigate("Forgetpwd")}
+>
+              <Text style={styles.loremIpsum3}>Mot de passe oublié ?</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -485,11 +513,16 @@ const submitForm2 = async () => {
             <TouchableOpacity
               onPress={submitForm2}
             style={styles.button}>
-              <Text style={styles.buttonText}>Inscription</Text>
-            </TouchableOpacity>
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Inscription</Text>
+              )}
+             </TouchableOpacity>
           </View>
 
-          <View
+
+           <View
             style={{ top: 235, flexDirection: "row", alignItems: "center" }}
           >
             <View style={styles.bar2} />
@@ -512,6 +545,7 @@ const submitForm2 = async () => {
         </View>
       )}
     </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -545,7 +579,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    backgroundColor: "white",
 
+  },
   cnx: {
     fontSize: 15,
     color: "black",
@@ -630,13 +668,25 @@ const styles = StyleSheet.create({
   radio1: {
     top: 160,
     left: 50,
+    flexDirection: "row",
+
+
   },
   loremIpsum2: {
     color: "#626262",
-    fontFamily: "Poppins",
+    fontFamily: "Montserrat",
+    fontSize: 13,
     top: 0,
     paddingLeft: 10,
   },
+  loremIpsum3: {
+    color: "#626262",
+     top:0,
+    paddingLeft: 70,
+    fontFamily: "Montserrat",
+    fontSize: 12,
+    
+   },
 
   buttonContainer: {
     top: 190,

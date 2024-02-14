@@ -133,7 +133,8 @@ const LoginScreen = ({ navigation }) => {
     </View>
 
     <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button}  
+      >
         <Text style={styles.buttonText}>Connexion</Text>
       </TouchableOpacity>
     </View>

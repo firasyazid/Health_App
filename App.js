@@ -7,7 +7,7 @@ import LoginScreen from "./screens/LoginScreen";
 import { useFonts } from "expo-font";
 import Inscription from "./screens/Inscription";
 import MainScreen from "./screens/MainScreen";
-
+import Forgetpwd from "./screens/Forgetpwd";
 
 
 
@@ -42,7 +42,8 @@ const App = () => {
         initialRouteName="MainScreen"
 
       >
-                <Stack.Screen name="MainScreen" component={MainScreen} />
+         <Stack.Screen name="MainScreen" component={MainScreen} />
+         <Stack.Screen name="Forgetpwd" component={Forgetpwd} />
 
         <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Inscription" component={Inscription} />
